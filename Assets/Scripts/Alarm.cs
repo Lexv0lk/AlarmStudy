@@ -17,6 +17,9 @@ public class Alarm : MonoBehaviour
 
     private void Update()
     {
+        if (_source.volume == _targetVolume)
+            return;
+
         _source.volume = Mathf.MoveTowards(_source.volume, _targetVolume, _changeSpeed * Time.deltaTime);
     }
 
