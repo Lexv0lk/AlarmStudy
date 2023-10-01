@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SignalingSystem : MonoBehaviour
@@ -8,22 +7,22 @@ public class SignalingSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        _detector.Entered += OnRobberEntered;
-        _detector.Exited += OnRobberExited;
+        _detector.Entered += OnEntered;
+        _detector.Exited += OnExited;
     }
 
     private void OnDisable()
     {
-        _detector.Entered -= OnRobberEntered;
-        _detector.Exited -= OnRobberExited;
+        _detector.Entered -= OnEntered;
+        _detector.Exited -= OnExited;
     }
 
-    private void OnRobberEntered()
+    private void OnEntered(Robber robber)
     {
         _alarm.Activate();
     }
 
-    private void OnRobberExited()
+    private void OnExited(Robber robber)
     {
         _alarm.Deactivate();
     }
