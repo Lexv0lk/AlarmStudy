@@ -1,42 +1,26 @@
-using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class Alarm : MonoBehaviour
 {
-    [SerializeField] private AudioSource _source;
     [SerializeField] private float _changeSpeed;
 
-    private float _maximalVolume = 1.0f;
-    private float _minimalVolume = 0f;
-    private IEnumerator _currentVolumeChanging;
+    private const float _maxVolume = 1f;
+    private const float _minVolume = 0f;
+    private float _targetVolume = _minVolume;
+    private AudioSource _source;
 
-    public void Activate()
+    private void Awake()
     {
-        StopVolumeChanging();
-        StartCoroutine(ChangeVolume(_maximalVolume, _maximalVolume));
+        _source = GetComponent<AudioSource>();
     }
 
-    public void Deactivate()
+    private void Update()
     {
-        StopVolumeChanging();
-        StartCoroutine(ChangeVolume(-_maximalVolume, _minimalVolume));
+        _source.volume = Mathf.MoveTowards(_source.volume, _targetVolume, _changeSpeed * Time.deltaTime);
     }
 
-    private void StopVolumeChanging()
-    {
-        if (_currentVolumeChanging != null)
-        {
-            StopCoroutine(_currentVolumeChanging);
-            _currentVolumeChanging = null;
-        }
-    }
+    public void Activate() => _targetVolume = _maxVolume;
 
-    private IEnumerator ChangeVolume(float delta, float targetValue)
-    {
-        while (_source.volume != targetValue)
-        {
-            _source.volume += delta * Time.deltaTime;
-            yield return null;
-        }
-    }
+    public void Deactivate() => _targetVolume = _minVolume;
 }

@@ -3,31 +3,28 @@ using UnityEngine;
 
 public class SignalingSystem : MonoBehaviour
 {
-    [SerializeField] private Detector _detector;
+    [SerializeField] private AreaDetector _detector;
     [SerializeField] private Alarm _alarm;
-
-    private List<GameObject> _objectsInside = new List<GameObject>();
 
     private void OnEnable()
     {
-        _detector.Detected += OnObjectDetected;
+        _detector.Entered += OnRobberEntered;
+        _detector.Exited += OnRobberExited;
     }
 
     private void OnDisable()
     {
-        _detector.Detected -= OnObjectDetected;
+        _detector.Entered -= OnRobberEntered;
+        _detector.Exited -= OnRobberExited;
     }
 
-    private void OnObjectDetected(GameObject passedObject)
+    private void OnRobberEntered()
     {
-        if (_objectsInside.Contains(passedObject))
-            _objectsInside.Remove(passedObject);
-        else
-            _objectsInside.Add(passedObject);
+        _alarm.Activate();
+    }
 
-        if (_objectsInside.Count == 0)
-            _alarm.Deactivate();
-        else if (_objectsInside.Count == 1)
-            _alarm.Activate();
+    private void OnRobberExited()
+    {
+        _alarm.Deactivate();
     }
 }
